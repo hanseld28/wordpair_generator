@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override 
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.indigo[900]),
-      home: RandomWords()
-    );
-  }
-}
 
 class RandomWords extends StatefulWidget {
   @override
@@ -20,6 +9,7 @@ class RandomWords extends StatefulWidget {
 
 class RandomWordsState extends State<RandomWords> {
   final _randomWordPairs = <WordPair>[];
+  final _savedWordPairs = Set<WordPair>();
 
   Widget _buildList() {
     return ListView.builder(
@@ -39,12 +29,26 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    final alreadySaved = _savedWordPairs.contains(pair);
     return ListTile(
       title: Text(pair.asPascalCase, 
-        style: TextStyle(
-          fontSize: 18.0
-        ),
-      )
+        style: TextStyle(fontSize: 18.0),
+      ),
+      trailing: Icon(alreadySaved ? Icons.favorite : 
+        Icons.favorite_border, 
+        color: alreadySaved ? Colors.red : null
+      ),
+      onTap: () {
+        setState(() {
+          if (alreadySaved) {
+            _savedWordPairs.remove(pair);
+          }
+          else {
+            _savedWordPairs.add(pair);
+          }
+        });
+      },
+      
     );
   }
   
